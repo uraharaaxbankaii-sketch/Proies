@@ -1,1 +1,902 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Proies — Smart Nutrition Tracker</title>
 
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+    font-family:Arial,Helvetica,sans-serif;
+}
+
+body{
+    background:#070910;
+    color:#fff;
+    min-height:100vh;
+}
+
+.container{
+    width:min(1050px,94%);
+    margin:auto;
+    padding-bottom:60px;
+}
+
+/* HEADER */
+header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:24px 0;
+}
+
+.logo{
+    font-size:30px;
+    font-weight:900;
+    letter-spacing:-1px;
+}
+
+.logo span{
+    color:#8b5cf6;
+}
+
+.status{
+    background:#151925;
+    border:1px solid #292e3d;
+    padding:8px 13px;
+    border-radius:30px;
+    font-size:11px;
+    color:#aeb5c5;
+}
+
+/* HERO */
+.hero{
+    position:relative;
+    overflow:hidden;
+    padding:38px 30px;
+    border-radius:28px;
+    background:
+        radial-gradient(circle at 85% 10%,rgba(139,92,246,.32),transparent 32%),
+        radial-gradient(circle at 10% 100%,rgba(70,90,255,.15),transparent 35%),
+        linear-gradient(135deg,#111522,#0c1019);
+    border:1px solid #292f40;
+}
+
+.hero h1{
+    font-size:clamp(38px,7vw,65px);
+    line-height:.98;
+    letter-spacing:-2px;
+}
+
+.hero h1 span{
+    color:#956cff;
+}
+
+.hero p{
+    color:#a7afc0;
+    line-height:1.6;
+    max-width:620px;
+    margin-top:17px;
+}
+
+.scan-btn{
+    margin-top:25px;
+    border:0;
+    padding:17px 25px;
+    border-radius:16px;
+    color:#fff;
+    background:linear-gradient(135deg,#7048f5,#9b6aff);
+    font-size:16px;
+    font-weight:800;
+    cursor:pointer;
+    box-shadow:0 12px 35px rgba(112,72,245,.25);
+}
+
+.scan-btn:active{
+    transform:scale(.98);
+}
+
+/* SECTION */
+.section-title{
+    margin:30px 0 15px;
+    font-size:20px;
+}
+
+/* STATS */
+.stats{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:15px;
+}
+
+.card{
+    background:#10141e;
+    border:1px solid #252b3a;
+    border-radius:20px;
+    padding:20px;
+}
+
+.card-label{
+    color:#858ea1;
+    font-size:13px;
+}
+
+.big-number{
+    font-size:30px;
+    font-weight:900;
+    margin:9px 0 13px;
+}
+
+.progress{
+    height:7px;
+    background:#242a37;
+    border-radius:20px;
+    overflow:hidden;
+}
+
+.progress-bar{
+    height:100%;
+    width:0;
+    background:linear-gradient(90deg,#7652f5,#b07cff);
+    border-radius:20px;
+    transition:.4s;
+}
+
+/* MACROS */
+.macros{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:15px;
+}
+
+.macro{
+    background:#10141e;
+    border:1px solid #252b3a;
+    border-radius:20px;
+    padding:20px;
+}
+
+.macro-name{
+    color:#858ea1;
+    font-size:13px;
+}
+
+.macro-value{
+    margin-top:8px;
+    font-size:27px;
+    font-weight:900;
+}
+
+.blue{
+    color:#5da2ff;
+}
+
+.yellow{
+    color:#ffc45c;
+}
+
+.red{
+    color:#ff718c;
+}
+
+/* MEALS */
+.meals{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+}
+
+.meal{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    background:#10141e;
+    border:1px solid #252b3a;
+    border-radius:18px;
+    padding:17px 18px;
+}
+
+.meal-title{
+    font-weight:800;
+}
+
+.meal-details{
+    color:#858ea1;
+    font-size:12px;
+    margin-top:6px;
+}
+
+.meal-calories{
+    font-weight:900;
+    white-space:nowrap;
+}
+
+/* MODAL */
+.modal{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.78);
+    backdrop-filter:blur(12px);
+    align-items:center;
+    justify-content:center;
+    padding:18px;
+    z-index:100;
+}
+
+.modal-box{
+    width:min(500px,100%);
+    max-height:92vh;
+    overflow:auto;
+    background:#10141e;
+    border:1px solid #30374a;
+    border-radius:25px;
+    padding:24px;
+}
+
+.modal-box h2{
+    font-size:24px;
+    margin-bottom:8px;
+}
+
+.description{
+    color:#8e97aa;
+    font-size:14px;
+    line-height:1.5;
+    margin-bottom:20px;
+}
+
+.upload{
+    display:block;
+    border:2px dashed #3a4153;
+    border-radius:20px;
+    padding:35px 20px;
+    text-align:center;
+    cursor:pointer;
+    transition:.2s;
+}
+
+.upload:hover{
+    border-color:#8b63ff;
+    background:#141827;
+}
+
+.upload-icon{
+    font-size:45px;
+    margin-bottom:10px;
+}
+
+.upload strong{
+    display:block;
+    margin-bottom:7px;
+}
+
+.upload small{
+    color:#7f8798;
+}
+
+input[type="file"]{
+    display:none;
+}
+
+.preview{
+    display:none;
+    width:100%;
+    max-height:260px;
+    object-fit:cover;
+    border-radius:18px;
+    margin-top:15px;
+}
+
+.analyze-btn{
+    width:100%;
+    margin-top:15px;
+    padding:15px;
+    border:0;
+    border-radius:15px;
+    background:#7652f5;
+    color:#fff;
+    font-weight:800;
+    cursor:pointer;
+}
+
+.close-btn{
+    width:100%;
+    margin-top:10px;
+    padding:14px;
+    border:0;
+    border-radius:15px;
+    background:#202532;
+    color:#fff;
+    cursor:pointer;
+}
+
+/* RESULT */
+.result{
+    display:none;
+    margin-top:20px;
+}
+
+.result-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    margin-top:12px;
+}
+
+.result-item{
+    background:#191f2c;
+    border-radius:15px;
+    padding:15px;
+}
+
+.result-item span{
+    color:#818a9d;
+    font-size:12px;
+}
+
+.result-item strong{
+    display:block;
+    font-size:21px;
+    margin-top:5px;
+}
+
+.warning{
+    color:#7f899b;
+    font-size:11px;
+    line-height:1.5;
+    margin-top:13px;
+}
+
+/* RESPONSIVE */
+@media(max-width:700px){
+
+    .stats,
+    .macros{
+        grid-template-columns:1fr;
+    }
+
+    .hero{
+        padding:28px 22px;
+    }
+
+    .hero h1{
+        font-size:45px;
+    }
+
+    header{
+        padding:18px 0;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<header>
+    <div class="logo">Pro<span>ies</span></div>
+    <div class="status">SMART NUTRITION</div>
+</header>
+
+<section class="hero">
+
+    <h1>
+        Eat smart.<br>
+        <span>Track better.</span>
+    </h1>
+
+    <p>
+        Track calories and macros with Proies.
+        Scan your meal, estimate its nutrition,
+        and keep your daily progress in one place.
+    </p>
+
+    <button class="scan-btn" onclick="openScanner()">
+        📸 Scan Your Food
+    </button>
+
+</section>
+
+
+<h2 class="section-title">Today's Progress</h2>
+
+<section class="stats">
+
+    <div class="card">
+        <div class="card-label">Calories consumed</div>
+
+        <div class="big-number">
+            <span id="calories">0</span> kcal
+        </div>
+
+        <div class="progress">
+            <div class="progress-bar" id="calProgress"></div>
+        </div>
+    </div>
+
+
+    <div class="card">
+        <div class="card-label">Protein consumed</div>
+
+        <div class="big-number">
+            <span id="protein">0</span> g
+        </div>
+
+        <div class="progress">
+            <div class="progress-bar" id="proteinProgress"></div>
+        </div>
+    </div>
+
+
+    <div class="card">
+        <div class="card-label">Meals logged</div>
+
+        <div class="big-number" id="mealCount">
+            0
+        </div>
+
+        <div class="progress">
+            <div class="progress-bar" id="mealProgress"></div>
+        </div>
+    </div>
+
+</section>
+
+
+<h2 class="section-title">Macros</h2>
+
+<section class="macros">
+
+    <div class="macro">
+        <div class="macro-name">Protein</div>
+        <div class="macro-value blue">
+            <span id="macroProtein">0</span> g
+        </div>
+    </div>
+
+    <div class="macro">
+        <div class="macro-name">Carbohydrates</div>
+        <div class="macro-value yellow">
+            <span id="macroCarbs">0</span> g
+        </div>
+    </div>
+
+    <div class="macro">
+        <div class="macro-name">Fat</div>
+        <div class="macro-value red">
+            <span id="macroFat">0</span> g
+        </div>
+    </div>
+
+</section>
+
+
+<h2 class="section-title">Today's Meals</h2>
+
+<section class="meals" id="mealList">
+
+    <div class="card" id="emptyMessage">
+        <div class="card-label">
+            No meals logged yet.
+            Scan your first meal above.
+        </div>
+    </div>
+
+</section>
+
+</div>
+
+
+<!-- FOOD SCANNER -->
+
+<div class="modal" id="scanner">
+
+    <div class="modal-box">
+
+        <h2>📸 Scan Food</h2>
+
+        <p class="description">
+            Take a photo or upload a photo of your meal.
+            Proies will estimate the nutritional information.
+        </p>
+
+
+        <label class="upload" for="foodImage">
+
+            <div class="upload-icon">
+                🍽️
+            </div>
+
+            <strong>
+                Tap to take or upload a photo
+            </strong>
+
+            <small>
+                Camera or image from your phone
+            </small>
+
+        </label>
+
+
+        <input
+            type="file"
+            id="foodImage"
+            accept="image/*"
+            capture="environment"
+            onchange="previewFood(event)"
+        >
+
+
+        <img
+            id="preview"
+            class="preview"
+        >
+
+
+        <button
+            class="analyze-btn"
+            onclick="analyzeFood()"
+        >
+            🔍 Analyze Food
+        </button>
+
+
+        <div
+            class="result"
+            id="result"
+        >
+
+            <h3>
+                Estimated Nutrition
+            </h3>
+
+
+            <div class="result-grid">
+
+                <div class="result-item">
+                    <span>Calories</span>
+                    <strong id="resultCalories">
+                        0 kcal
+                    </strong>
+                </div>
+
+
+                <div class="result-item">
+                    <span>Protein</span>
+                    <strong id="resultProtein">
+                        0 g
+                    </strong>
+                </div>
+
+
+                <div class="result-item">
+                    <span>Carbohydrates</span>
+                    <strong id="resultCarbs">
+                        0 g
+                    </strong>
+                </div>
+
+
+                <div class="result-item">
+                    <span>Fat</span>
+                    <strong id="resultFat">
+                        0 g
+                    </strong>
+                </div>
+
+            </div>
+
+
+            <button
+                class="analyze-btn"
+                onclick="addMeal()"
+            >
+                ➕ Add to Today's Log
+            </button>
+
+
+            <p class="warning">
+                Nutrition values are estimates. Actual values can
+                vary depending on ingredients, preparation and
+                portion size.
+            </p>
+
+        </div>
+
+
+        <button
+            class="close-btn"
+            onclick="closeScanner()"
+        >
+            Close
+        </button>
+
+    </div>
+
+</div>
+
+
+<script>
+
+let dailyCalories = 0;
+let dailyProtein = 0;
+let dailyCarbs = 0;
+let dailyFat = 0;
+let mealCount = 0;
+
+
+/* Current scanned meal */
+
+let scannedFood = {
+    name:"Dal Chawal",
+    calories:450,
+    protein:15,
+    carbs:75,
+    fat:8
+};
+
+
+/* OPEN SCANNER */
+
+function openScanner(){
+
+    document.getElementById("scanner").style.display="flex";
+
+}
+
+
+/* CLOSE SCANNER */
+
+function closeScanner(){
+
+    document.getElementById("scanner").style.display="none";
+
+}
+
+
+/* IMAGE PREVIEW */
+
+function previewFood(event){
+
+    const file =
+        event.target.files[0];
+
+    if(!file) return;
+
+    const preview =
+        document.getElementById("preview");
+
+    preview.src =
+        URL.createObjectURL(file);
+
+    preview.style.display="block";
+
+}
+
+
+/* ANALYZE FOOD */
+
+function analyzeFood(){
+
+    const file =
+        document.getElementById("foodImage").files[0];
+
+    if(!file){
+
+        alert(
+            "Please take or upload a food photo first."
+        );
+
+        return;
+
+    }
+
+
+    /*
+      DEMO RESULT
+
+      This is a temporary demonstration.
+      A real AI vision API/backend must be connected
+      for actual food recognition.
+    */
+
+    scannedFood = {
+
+        name:"Dal Chawal",
+
+        calories:450,
+
+        protein:15,
+
+        carbs:75,
+
+        fat:8
+
+    };
+
+
+    document.getElementById(
+        "resultCalories"
+    ).textContent =
+        scannedFood.calories + " kcal";
+
+
+    document.getElementById(
+        "resultProtein"
+    ).textContent =
+        scannedFood.protein + " g";
+
+
+    document.getElementById(
+        "resultCarbs"
+    ).textContent =
+        scannedFood.carbs + " g";
+
+
+    document.getElementById(
+        "resultFat"
+    ).textContent =
+        scannedFood.fat + " g";
+
+
+    document.getElementById(
+        "result"
+    ).style.display="block";
+
+}
+
+
+/* ADD MEAL */
+
+function addMeal(){
+
+    dailyCalories +=
+        scannedFood.calories;
+
+    dailyProtein +=
+        scannedFood.protein;
+
+    dailyCarbs +=
+        scannedFood.carbs;
+
+    dailyFat +=
+        scannedFood.fat;
+
+    mealCount++;
+
+
+    document.getElementById(
+        "emptyMessage"
+    ).style.display="none";
+
+
+    const mealList =
+        document.getElementById(
+            "mealList"
+        );
+
+
+    const meal =
+        document.createElement("div");
+
+
+    meal.className="meal";
+
+
+    meal.innerHTML = `
+
+        <div>
+
+            <div class="meal-title">
+                ${scannedFood.name}
+            </div>
+
+            <div class="meal-details">
+
+                ${scannedFood.protein}g protein
+                ·
+                ${scannedFood.carbs}g carbs
+                ·
+                ${scannedFood.fat}g fat
+
+            </div>
+
+        </div>
+
+
+        <div class="meal-calories">
+
+            ${scannedFood.calories} kcal
+
+        </div>
+
+    `;
+
+
+    mealList.appendChild(meal);
+
+
+    updateDashboard();
+
+    closeScanner();
+
+}
+
+
+/* UPDATE DASHBOARD */
+
+function updateDashboard(){
+
+    document.getElementById(
+        "calories"
+    ).textContent =
+        dailyCalories;
+
+
+    document.getElementById(
+        "protein"
+    ).textContent =
+        dailyProtein;
+
+
+    document.getElementById(
+        "macroProtein"
+    ).textContent =
+        dailyProtein;
+
+
+    document.getElementById(
+        "macroCarbs"
+    ).textContent =
+        dailyCarbs;
+
+
+    document.getElementById(
+        "macroFat"
+    ).textContent =
+        dailyFat;
+
+
+    document.getElementById(
+        "mealCount"
+    ).textContent =
+        mealCount;
+
+
+    document.getElementById(
+        "calProgress"
+    ).style.width =
+        Math.min(
+            (dailyCalories / 2500) * 100,
+            100
+        ) + "%";
+
+
+    document.getElementById(
+        "proteinProgress"
+    ).style.width =
+        Math.min(
+            (dailyProtein / 120) * 100,
+            100
+        ) + "%";
+
+
+    document.getElementById(
+        "mealProgress"
+    ).style.width =
+        Math.min(
+            (mealCount / 5) * 100,
+            100
+        ) + "%";
+
+}
+
+</script>
+
+</body>
+</html>
